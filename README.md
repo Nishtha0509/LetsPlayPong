@@ -1,2 +1,1 @@
 # LetsPlayPong
-classic pong game
