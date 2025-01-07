@@ -81,6 +81,13 @@ function love.keypressed(key)
 
 end
 
+function displayFPS()
+    love.graphics.setColor(0, 1, 0, 1)
+    love.graphics.setFont(smallFont)
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 5)
+    love.graphics.setColor(1, 1, 1, 1)
+end
+
 function love.draw()
 
     push:apply('start')
@@ -105,6 +112,8 @@ function love.draw()
     -- Render Paddles
     paddle1:render()
     paddle2:render()
+
+    displayFPS()
 
     push:apply('end')
 
