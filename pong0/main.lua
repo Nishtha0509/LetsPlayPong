@@ -5,7 +5,7 @@ VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
 PADDLE_SPPED = 200
-BALL_SPEED = 75
+BALL_SPEED = 90
 
 Class = require 'class'
 push = require 'push'
@@ -16,12 +16,13 @@ require 'Paddle'
 function love.load()
     math.randomseed(os.time())
     love.graphics.setDefaultFilter('nearest','nearest')
+    love.window.setTitle('Pong ')
 
     smallFont = love.graphics.newFont('04B_03__.TTF', 8)
     scoreFont = love.graphics.newFont('04B_03__.TTF', 32)
 
-    -- player1 = 0
-    -- player2 = 0
+    player1score = 0
+    player2score = 0
 
     -- intiate paddles
     paddle1 = Paddle(5, 20, 5, 25)
@@ -44,6 +45,26 @@ function love.update(dt)
 
     paddle1:update(dt)
     paddle2:update(dt)
+
+    if ball:collides(paddle1) then
+        -- deflect ball to right
+        ball.dx = -ball.dx
+    end
+
+    if ball:collides(paddle2) then
+        -- deflect ball to left
+        ball.dx = -ball.dx
+    end
+
+    if ball.y <=0 then
+        ball.dy = -ball.dy
+        ball.y = 0
+    end
+
+    if ball.y >= VIRTUAL_HEIGHT - 4 then
+        ball.dy = -ball.dy
+        ball.y = VIRTUAL_HEIGHT - 4
+    end
 
     if love.keyboard.isDown('w') then
         paddle1.dy = -PADDLE_SPPED
@@ -103,8 +124,8 @@ function love.draw()
     end
 
     love.graphics.setFont(scoreFont)
-    -- love.graphics.print(player1, VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-    -- love.graphics.print(player2, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+    love.graphics.print(player1score, VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
+    love.graphics.print(player2score, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
 
     -- Render Ball
     ball:render()

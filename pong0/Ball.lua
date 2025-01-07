@@ -23,6 +23,19 @@ function Ball:update(dt)
     self.y = self.y + self.dy * dt
 end
 
+function Ball:collides(entity)
+    if self.x > entity.x + entity.width or self.x + self.width < entity.x then
+        return false
+    end
+
+    if self.y > entity.y + entity.height or self.y + self.height < entity.height then
+        return false
+    end
+
+    return true
+
+end
+
 function Ball:render()
     love.graphics.rectangle('fill', self.x, self.y, self.width, self.height)
 end
