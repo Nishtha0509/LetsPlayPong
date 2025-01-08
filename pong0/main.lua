@@ -46,14 +46,42 @@ function love.update(dt)
     paddle1:update(dt)
     paddle2:update(dt)
 
+    -- update the scores and reset
+    if ball.x <= 0 then
+        player2score = player2score + 1
+        ball:reset()
+        gameState = 'init'
+    elseif ball.x >= VIRTUAL_WIDTH - 4 then
+        player1score = player1score + 1
+        ball:reset()
+        gameState = 'init'
+    end
+
+    -- handle collisions
     if ball:collides(paddle1) then
-        -- deflect ball to right
-        ball.dx = -ball.dx
+        -- deflect ball to right and increase the speed slightly 
+        ball.dx = -ball.dx * 1.03
+        ball.x = paddle1.x + 5
+
+        -- randomise dy just for fun!
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10,150)
+        end
     end
 
     if ball:collides(paddle2) then
-        -- deflect ball to left
-        ball.dx = -ball.dx
+        -- deflect ball to left and increase the speed slightly 
+        ball.dx = -ball.dx * 1.03
+        ball.x = paddle2.x - 5
+
+        -- randomise dy just for fun!
+        if ball.dy < 0 then
+            ball.dy = -math.random(10, 150)
+        else
+            ball.dy = math.random(10,150)
+        end
     end
 
     if ball.y <=0 then
@@ -94,9 +122,6 @@ function love.keypressed(key)
     elseif key == 'enter' or key == 'return' then
         if gameState == 'init' then
             gameState = 'play'
-        elseif gameState == 'play' then
-            gameState = 'init'
-            ball:reset()
         end
     end 
 
@@ -117,15 +142,11 @@ function love.draw()
 
     love.graphics.setFont(smallFont)
 
-    if gameState == 'init' then
-        love.graphics.printf("Welcome Pong!", 0, 10, VIRTUAL_WIDTH , 'center')
-    elseif gameState == 'play' then
-        love.graphics.printf("Let's Play Pong!", 0, 10, VIRTUAL_WIDTH , 'center')
-    end
+    love.graphics.printf("Let's Play Pong!", 0, 10, VIRTUAL_WIDTH , 'center')
 
     love.graphics.setFont(scoreFont)
     love.graphics.print(player1score, VIRTUAL_WIDTH / 2 - 50, VIRTUAL_HEIGHT / 3)
-    love.graphics.print(player2score, VIRTUAL_WIDTH / 2 + 30, VIRTUAL_HEIGHT / 3)
+    love.graphics.print(player2score, VIRTUAL_WIDTH / 2 + 35, VIRTUAL_HEIGHT / 3)
 
     -- Render Ball
     ball:render()

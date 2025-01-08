@@ -28,7 +28,7 @@ function Ball:collides(entity)
         return false
     end
 
-    if self.y > entity.y + entity.height or self.y + self.height < entity.height then
+    if self.y > entity.y + entity.height or self.y + self.height < entity.y then
         return false
     end
 
