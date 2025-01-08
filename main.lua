@@ -18,9 +18,17 @@ function love.load()
     love.graphics.setDefaultFilter('nearest','nearest')
     love.window.setTitle('Pong ')
 
-    smallFont = love.graphics.newFont('04B_03__.TTF', 8)
-    scoreFont = love.graphics.newFont('04B_03__.TTF', 32)
-    victoryFont = love.graphics.newFont('04B_03__.TTF', 24)
+    smallFont = love.graphics.newFont('fonts/04B_03__.TTF', 8)
+    scoreFont = love.graphics.newFont('fonts/04B_03__.TTF', 32)
+    victoryFont = love.graphics.newFont('fonts/04B_03__.TTF', 24)
+    love.graphics.setFont(smallFont)
+
+    sounds = {
+        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav', 'static'),
+        ['scored'] = love.audio.newSource('sounds/scored.wav', 'static'),
+        ['victory'] = love.audio.newSource('sounds/victory.wav', 'static')
+    }
 
     player1score = 0
     player2score = 0
@@ -65,8 +73,10 @@ function love.update(dt)
         if player2score >= 2 then
             gameState = 'victory'
             winningPlayer = 2
+            sounds['victory']:play()
         else
             gameState = 'serve'
+            sounds['scored']:play()
         end
 
     elseif ball.x >= VIRTUAL_WIDTH - 4 then
@@ -78,8 +88,10 @@ function love.update(dt)
         if player1score >= 2 then
             gameState = 'victory'
             winningPlayer = 1
+            sounds['victory']:play()
         else
             gameState = 'serve'
+            sounds['scored']:play()
         end
 
     end
@@ -89,6 +101,8 @@ function love.update(dt)
         -- deflect ball to right and increase the speed slightly 
         ball.dx = -ball.dx * 1.03
         ball.x = paddle1.x + 5
+
+        sounds['paddle_hit']:play()
 
         -- randomise dy just for fun!
         if ball.dy < 0 then
@@ -103,6 +117,8 @@ function love.update(dt)
         ball.dx = -ball.dx * 1.03
         ball.x = paddle2.x - 5
 
+        sounds['paddle_hit']:play()
+
         -- randomise dy just for fun!
         if ball.dy < 0 then
             ball.dy = -math.random(10, 150)
@@ -114,11 +130,13 @@ function love.update(dt)
     if ball.y <=0 then
         ball.dy = -ball.dy
         ball.y = 0
+        sounds['wall_hit']:play()
     end
 
     if ball.y >= VIRTUAL_HEIGHT - 4 then
         ball.dy = -ball.dy
         ball.y = VIRTUAL_HEIGHT - 4
+        sounds['wall_hit']:play()
     end
 
     if love.keyboard.isDown('w') then
@@ -173,12 +191,12 @@ function love.draw()
 
     love.graphics.clear(68/255, 80/255, 130/255, 255/255)
 
-    love.graphics.setFont(smallFont)
-
     if gameState == 'init' then
+        love.graphics.setFont(smallFont)
         love.graphics.printf("Welcome to Pong!", 0, 10, VIRTUAL_WIDTH , 'center')
         love.graphics.printf("Press Enter to Start!", 0, 20, VIRTUAL_WIDTH , 'center')
     elseif gameState == 'serve' then
+        love.graphics.setFont(smallFont)
         love.graphics.printf("Player " .. tostring(servingPlayer) .. "'s Turn!", 0, 10, VIRTUAL_WIDTH , 'center')
         love.graphics.printf("Press Enter to Serve!", 0, 20, VIRTUAL_WIDTH , 'center')
     elseif gameState == 'victory' then
