@@ -5,7 +5,7 @@ VIRTUAL_WIDTH = 432
 VIRTUAL_HEIGHT = 243
 
 PADDLE_SPPED = 200
-BALL_SPEED = 100
+BALL_SPEED = 110
 
 Class = require 'class'
 push = require 'push'
@@ -51,7 +51,7 @@ function love.load()
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         vsync = true,
-        resizable = false
+        resizable = true
     })
 
     gameState = 'init'
@@ -70,7 +70,7 @@ function love.update(dt)
         servingPlayer = 1
         ball.dx = BALL_SPEED
 
-        if player2score >= 2 then
+        if player2score >= 10 then
             gameState = 'victory'
             winningPlayer = 2
             sounds['victory']:play()
@@ -85,7 +85,7 @@ function love.update(dt)
         ball.dx = -BALL_SPEED
         servingPlayer = 2
         
-        if player1score >= 2 then
+        if player1score >= 10 then
             gameState = 'victory'
             winningPlayer = 1
             sounds['victory']:play()
@@ -183,6 +183,10 @@ function displayFPS()
     love.graphics.setFont(smallFont)
     love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 5)
     love.graphics.setColor(1, 1, 1, 1)
+end
+
+function love.resize(w, h)
+    push:resize(w, h)
 end
 
 function love.draw()
